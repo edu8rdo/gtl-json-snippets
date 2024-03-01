@@ -1,0 +1,52 @@
+%%[
+
+/*Loops through full JSON; displays values of KVP conditional based on the value of one of the KVP*/
+
+Var @jsonCancellations
+Set @jsonCancellations = '
+   [
+       {
+           "productTitle": "Fan",
+           "sku": "fan1",
+           "cancelledQty": 1,
+           "cancellationReason": "Failed"
+       },
+       {
+           "productTitle": "Hat",
+           "sku": "fan1",
+           "cancelledQty": 1,
+           "cancellationReason": "Failed"
+       },
+       {
+           "productTitle": "Teabags",
+           "sku": "tea1",
+           "cancelledQty": 10,
+           "cancellationReason": "unknown"
+       },
+       {
+           "productTitle": "paint",
+           "sku": "paint1",
+           "cancelledQty": 10,
+           "cancellationReason": "unknown"
+       }
+   ]
+'
+]%%
+
+{{.datasource jsonCancellations type=variable maxRows=5000}}
+{{.data}}
+   {"target": "@jsonCancellations"}
+{{/data}}
+
+{{#if jsonCancellations.cancellationReason == "Failed"}}
+<p>productTitle: {{productTitle}}<br>sku: {{sku}}<br>cancelledQty: {{cancelledQty}}</p>
+{{/if}}
+
+
+
+{{#if jsonCancellations.cancellationReason == "unknown"}}
+<p>productTitle: {{productTitle}}<br>sku: {{sku}}<br>cancelledQty: {{cancelledQty}}</p>
+{{/if}}
+{{/datasource}}
+
+
