@@ -1,0 +1,175 @@
+%%[
+/*Side-by-side approaches to looping through JSON KVPs; dynamic looping, and specifying nodes*/
+
+
+   /*Set @passedJSON      = AttributeValue("JSON")*/
+   Set @passedJSON        = '{
+          "BillingFirstName": "unknown",
+          "BillingLastName": "unknown",
+          "BillingStreet": "1166 W Newport Center Dr",
+          "BillingCity": "Deerfield Beach",
+          "BillingState": "FL",
+          "BillingCountry": "US",
+          "BillingZipCode": "33442",
+          "ShippingFirst Name": "unknown",
+          "ShippingLast Name": "unknown",
+          "ShippingStreet": "1166 W Newport Center Dr",
+          "ShippingCity": "Deerfield Beach",
+          "ShippingState": "FL",
+          "ShippingCountry": "US",
+          "ShippingZipCode": "33442",
+          "ProductInfo":
+          [
+              {
+                  "ItemizedProductQuantity": 0,
+                  "ItemizedProductCost": 0,
+                  "ProductDescriptions": "Prod9",
+                  "TotalProductQuantity": 0,
+                  "TotalProductCost": 0
+              },
+              {
+                  "ItemizedProductQuantity": 0,
+                  "ItemizedProductCost": 0,
+                  "ProductDescriptions": "MICA FL 1",
+                  "TotalProductQuantity": 0,
+                  "TotalProductCost": 0
+              },
+              {
+                  "ItemizedProductQuantity": 0,
+                  "ItemizedProductCost": 0,
+                  "ProductDescriptions": "WOMEN''S TORPEDO JACKET",
+                  "TotalProductQuantity": 0,
+                  "TotalProductCost": 0
+              },
+              {
+                  "ItemizedProductQuantity": 0,
+                  "ItemizedProductCost": 0,
+                  "ProductDescriptions": "Prod1",
+                  "TotalProductQuantity": 0,
+                  "TotalProductCost": 0
+              },
+              {
+                  "ItemizedProductQuantity": 0,
+                  "ItemizedProductCost": 0,
+                  "ProductDescriptions": "Prod1",
+                  "TotalProductQuantity": 0,
+                  "TotalProductCost": 0
+              },
+              {
+                  "ItemizedProductQuantity": 0,
+                  "ItemizedProductCost": 0,
+                  "ProductDescriptions": "Prod1",
+                  "TotalProductQuantity": 0,
+                  "TotalProductCost": 0
+              },
+              {
+                  "ItemizedProductQuantity": 0,
+                  "ItemizedProductCost": 0,
+                  "ProductDescriptions": "2",
+                  "TotalProductQuantity": 0,
+                  "TotalProductCost": 0
+              },
+              {
+                  "ItemizedProductQuantity": 0,
+                  "ItemizedProductCost": 0,
+                  "ProductDescriptions": "1",
+                  "TotalProductQuantity": 0,
+                  "TotalProductCost": 0
+              },
+              {
+                  "ItemizedProductQuantity": 1,
+                  "ItemizedProductCost": 1,
+                  "ProductDescriptions": "21",
+                  "TotalProductQuantity": 1,
+                  "TotalProductCost": 1
+              },
+              {
+                  "ItemizedProductQuantity": 1,
+                  "ItemizedProductCost": 1,
+                  "ProductDescriptions": "21",
+                  "TotalProductQuantity": 1,
+                  "TotalProductCost": 1
+              }
+          ],
+          "TotalShipping Cost": 0,
+          "TotalTax Cost": 2,
+          "TotalCost": 2,
+          "StoreLink": "unknown",
+          "BrandCode": "Site2",
+          "ShippingMethod": "Standard Shipping",
+          "OrderNumber": "test",
+          "OrderType": "unknown",
+          "PaymentMethod": "CreditCard",
+          "Email": "john@doe.com"
+      }'
+
+   Set @brs_CustData        = BuildRowsetFromJson(@passedJSON,'$.BillingStreet', 1)
+   /*^Use https://jsonpath.com/ to develop JSONPath arguments; NOTE that conditional functions are NOT supported*/
+   Set @rc_CustData         = RowCount(@brs_CustData) /*<!-- returns 1*/
+   Set @field_BillingStreet = Field(Row(@brs_CustData,1),1)
+   /*^Pulling parent KVP from JSON*/
+
+   /*APPROACH 1*/
+   Set @brs_ProductInfo = BuildRowsetFromJson(@passedJSON,'$.ProductInfo[*]', 1)
+   /*^Use https://jsonpath.com/ to develop JSONPath arguments; NOTE that conditional functions are NOT supported*/
+   Set @rc_ProductInfo  = RowCount(@brs_ProductInfo) /*<!-- returns 10*/
+
+   /*APPROACH 2*/
+   Set @brs_ProductDescription = BuildRowsetFromJson(@passedJSON,'$.ProductInfo[*].ProductDescriptions', 1)
+   Set @brs_TotalProductCost   = BuildRowsetFromJson(@passedJSON,'$.ProductInfo[*].TotalProductCost', 1)
+   Set @rc_ProductDescription  = RowCount(@brs_ProductDescription)
+   Set @rc_ProductCost         = RowCount(@brs_TotalProductCost)
+]%%
+
+<!--APPROACH 1: Looping through KVPs in under a parent node to generate table-->
+<table width="100%" cellpadding="0" cellspacing="0" border="1">
+   <tr>
+      <td valign="top" align="left">
+         ItemizedProductQuantity
+      </td>
+      <td valign="top" align="left">
+         ItemizedProductCost
+      </td>
+      <td valign="top" align="left">
+         ProductDescriptions
+      </td>
+      <td valign="top" align="left">
+         TotalProductQuantity
+      </td>
+      <td valign="top" align="left">
+         TotalProductCost
+      </td>
+   </tr>
+   %%[For @p = 1 to @rc_ProductInfo Do]%%
+   <tr>
+      %%[For @pi = 1 To 5 Do]%%
+      <td valign="top" align="left">
+         %%=Field(Row(@brs_ProductInfo,@p),@pi)=%%
+      </td>
+      %%[Next @pi]%%
+   </tr>
+   %%[Next @p]%%
+</table>
+
+
+<!--APPROACH 2: Pulling in specific KVPs in table-->
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="display:none ;">
+   <tr>
+      <td valign="top" align="left">
+         ProductDescriptions
+      </td>
+      <td valign="top" align="left">
+         TotalProductCost
+      </td>
+   </tr>
+   %%[For @pd = 1 To @rc_ProductDescription Do]%%
+   <tr>
+      <td valign="top" align="left">
+         %%=Field(Row(@brs_ProductDescription,@pd),1)=%%
+      </td>
+      <td valign="top" align="left">
+         %%=Field(Row(@brs_TotalProductCost,@pd),1)=%%
+      </td>
+   </tr>
+   %%[Next @pd]%%
+</table>
