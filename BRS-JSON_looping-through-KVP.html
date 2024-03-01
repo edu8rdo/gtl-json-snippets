@@ -1,0 +1,67 @@
+%%[
+   Set @passedJSON        = '{"To":{"Address":"555@yopmail.com","SubscriberKey":"555@yopmail.com","ContactAttributes":{"SubscriberAttributes":{"AccountHomeLink":"https://dev.yourwinestore.com","EmailAddress":"new2@yopmail.com","FirstName":"Aditya","memCustomerGroup":"Aficionado","ClubMembershipPreferences":"White Only","ShippingAddress1":"Gurgaon","ShippingAddress2":"Gurgaon","ShippingCity":"Gurgaon","ShippingPostalCode":"131001","ShippingCountry":"India","UpcomingShipmentDate":"July 18, 2022"}}}}'
+   /*
+   Above JSON in clean format to help readability
+   {
+       "To":
+       {
+           "Address": "555@yopmail.com",
+           "SubscriberKey": "555@yopmail.com",
+           "ContactAttributes":
+           {
+               "SubscriberAttributes":
+               {
+                   "AccountHomeLink": "https://dev.yourwinestore.com",
+                   "EmailAddress": "new2@yopmail.com",
+                   "FirstName": "Aditya",
+                   "memCustomerGroup": "Aficionado",
+                   "ClubMembershipPreferences": "White Only",
+                   "ShippingAddress1": "Gurgaon",
+                   "ShippingAddress2": "Gurgaon",
+                   "ShippingCity": "Gurgaon",
+                   "ShippingPostalCode": "131001",
+                   "ShippingCountry": "India",
+                   "UpcomingShipmentDate": "July 18, 2022"
+               }
+           }
+       }
+   }
+   */
+
+   Set @brs_SubAttr   = BuildRowsetFromJson(@passedJSON,'$.To..ContactAttributes..SubscriberAttributes', 1)
+   Set @rc_SubAttr    = RowCount(@brs_SubAttr) /*<-- returns: 1*/
+   Set @field_SubAttr = Field(Row(@brs_SubAttr,1),1) /*<-- returns: https://dev.yourwinestore.com*/
+
+   Set @brs_ClubMembership = BuildRowsetFromJson(@passedJSON,'$.To..ContactAttributes..SubscriberAttributes.ClubMembershipPreferences', 1)
+   Set @brs_CustGroup      = BuildRowsetFromJson(@passedJSON,'$.To..ContactAttributes..SubscriberAttributes.memCustomerGroup', 1)
+   Set @rc_ClubMembership  = RowCount(@brs_ClubMembership)
+   Set @rc_CustGroup       = RowCount(@brs_CustGroup)
+]%%
+
+<table width="100%" cellpadding="0" cellspacing="0" border="1">
+   %%[For @s = 1 to @rc_SubAttr Do]%%
+   <tr>
+      %%[For @sa = 1 To 11 Do]%%
+      %%[/*^
+         The 11 corresponds to the number of nodes appearing under SubscriberAttributes. 
+         Changing this to 2 (for example, will only return the value of the first 2 nodes: AccountHomeLink and EmailAddress)
+      */]%%
+      <td valign="top" align="left">
+         %%=Field(Row(@brs_SubAttr,@s),@sa)=%%
+      </td>
+      %%[Next @sa]%%
+   </tr>
+   %%[Next @s]%%
+</table>
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+   <tr>
+      <td valign="top" align="left">
+         ClubMembershipPreferences: %%=Field(Row(@brs_ClubMembership,1),1)=%%<br>
+         memCustomerGroup: %%=Field(Row(@brs_CustGroup,1),1)=%%<br>
+      </td>
+   </tr>
+</table>
+
+
+<!--OUTPUT for line 50: table row - columns determined by end value at line 11*/
