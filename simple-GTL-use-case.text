@@ -1,0 +1,145 @@
+%%[
+/*Typical use for GTL to parse JSON; as simple as they come*/
+
+
+Set @passedJSON = '{"BillingFirstName":"unknown","BillingLastName":"unknown","BillingStreet":"1166 W Newport Center Dr","BillingCity":"Deerfield Beach","BillingState":"FL","BillingCountry":"US","BillingZipCode":"33442","ShippingFirst Name":"unknown","ShippingLast Name":"unknown","ShippingStreet":"1166 W Newport Center Dr","ShippingCity":"Deerfield Beach","ShippingState":"FL","ShippingCountry":"US","ShippingZipCode":"33442","ProductInfo":[{"ItemizedProductQuantity":0,"ItemizedProductCost":0,"ProductDescriptions":"Prod9","TotalProductQuantity":0,"TotalProductCost":0},{"ItemizedProductQuantity":0,"ItemizedProductCost":0,"ProductDescriptions":"MICA FL 1","TotalProductQuantity":0,"TotalProductCost":0},{"ItemizedProductQuantity":0,"ItemizedProductCost":0,"ProductDescriptions":"WOMEN''S TORPEDO JACKET","TotalProductQuantity":0,"TotalProductCost":0},{"ItemizedProductQuantity":0,"ItemizedProductCost":0,"ProductDescriptions":"Prod1","TotalProductQuantity":0,"TotalProductCost":0},{"ItemizedProductQuantity":0,"ItemizedProductCost":0,"ProductDescriptions":"Prod1","TotalProductQuantity":0,"TotalProductCost":0},{"ItemizedProductQuantity":0,"ItemizedProductCost":0,"ProductDescriptions":"Prod1","TotalProductQuantity":0,"TotalProductCost":0},{"ItemizedProductQuantity":0,"ItemizedProductCost":0,"ProductDescriptions":"2","TotalProductQuantity":0,"TotalProductCost":0},{"ItemizedProductQuantity":0,"ItemizedProductCost":0,"ProductDescriptions":"1","TotalProductQuantity":0,"TotalProductCost":0},{"ItemizedProductQuantity":1,"ItemizedProductCost":1,"ProductDescriptions":"21","TotalProductQuantity":1,"TotalProductCost":1},{"ItemizedProductQuantity":1,"ItemizedProductCost":1,"ProductDescriptions":"21","TotalProductQuantity":1,"TotalProductCost":1}],"TotalShipping Cost":0,"TotalTax Cost":2,"TotalCost":2,"StoreLink":"unknown","BrandCode":"Site2","ShippingMethod":"Standard Shipping","OrderNumber":"test","OrderType":"unknown","PaymentMethod":"CreditCard","Email":"john@doe.com"}'
+/*^JSON formatted for easier readability
+{
+	"BillingFirstName": "unknown",
+	"BillingLastName": "unknown",
+	"BillingStreet": "1166 W Newport Center Dr",
+	"BillingCity": "Deerfield Beach",
+	"BillingState": "FL",
+	"BillingCountry": "US",
+	"BillingZipCode": "33442",
+	"ShippingFirst Name": "unknown",
+	"ShippingLast Name": "unknown",
+	"ShippingStreet": "1166 W Newport Center Dr",
+	"ShippingCity": "Deerfield Beach",
+	"ShippingState": "FL",
+	"ShippingCountry": "US",
+	"ShippingZipCode": "33442",
+	"ProductInfo":
+	[
+		{
+			"ItemizedProductQuantity": 0,
+			"ItemizedProductCost": 0,
+			"ProductDescriptions": "Prod9",
+			"TotalProductQuantity": 0,
+			"TotalProductCost": 0
+		},
+		{
+			"ItemizedProductQuantity": 0,
+			"ItemizedProductCost": 0,
+			"ProductDescriptions": "MICA FL 1",
+			"TotalProductQuantity": 0,
+			"TotalProductCost": 0
+		},
+		{
+			"ItemizedProductQuantity": 0,
+			"ItemizedProductCost": 0,
+			"ProductDescriptions": "WOMEN''S TORPEDO JACKET",
+			"TotalProductQuantity": 0,
+			"TotalProductCost": 0
+		},
+		{
+			"ItemizedProductQuantity": 0,
+			"ItemizedProductCost": 0,
+			"ProductDescriptions": "Prod1",
+			"TotalProductQuantity": 0,
+			"TotalProductCost": 0
+		},
+		{
+			"ItemizedProductQuantity": 0,
+			"ItemizedProductCost": 0,
+			"ProductDescriptions": "Prod1",
+			"TotalProductQuantity": 0,
+			"TotalProductCost": 0
+		},
+		{
+			"ItemizedProductQuantity": 0,
+			"ItemizedProductCost": 0,
+			"ProductDescriptions": "Prod1",
+			"TotalProductQuantity": 0,
+			"TotalProductCost": 0
+		},
+		{
+			"ItemizedProductQuantity": 0,
+			"ItemizedProductCost": 0,
+			"ProductDescriptions": "2",
+			"TotalProductQuantity": 0,
+			"TotalProductCost": 0
+		},
+		{
+			"ItemizedProductQuantity": 0,
+			"ItemizedProductCost": 0,
+			"ProductDescriptions": "1",
+			"TotalProductQuantity": 0,
+			"TotalProductCost": 0
+		},
+		{
+			"ItemizedProductQuantity": 1,
+			"ItemizedProductCost": 1,
+			"ProductDescriptions": "21",
+			"TotalProductQuantity": 1,
+			"TotalProductCost": 1
+		},
+		{
+			"ItemizedProductQuantity": 1,
+			"ItemizedProductCost": 1,
+			"ProductDescriptions": "21",
+			"TotalProductQuantity": 1,
+			"TotalProductCost": 1
+		}
+	],
+	"TotalShipping Cost": 0,
+	"TotalTax Cost": 2,
+	"TotalCost": 2,
+	"StoreLink": "unknown",
+	"BrandCode": "Site2",
+	"ShippingMethod": "Standard Shipping",
+	"OrderNumber": "test",
+	"OrderType": "unknown",
+	"PaymentMethod": "CreditCard",
+	"Email": "john@doe.com"
+}*/
+]%%
+{{.datasource passedJSON type=variable maxRows = 1}}
+{{.data}}
+   { "target" : "@passedJSON" }
+{{/data}}
+
+
+<table width="100%" cellpadding="0" cellspacing="0" border="1">
+ <tr>
+	<td valign="top" align="left">
+	   ItemizedProductQuantity
+	</td>
+	<td valign="top" align="left">
+	   ItemizedProductCost
+	</td>
+	<td valign="top" align="left">
+	   ProductDescriptions
+	</td>
+	<td valign="top" align="left">
+	   TotalProductQuantity
+	</td>
+	<td valign="top" align="left">
+	   TotalProductCost
+	</td>
+ </tr>
+ {{.datasource JsonProductInfo type=nested}}
+ {{.data}}
+	{ "target" : "passedJSON.ProductInfo" }
+ {{/data}}
+ <tr>
+	<td style="width:15%; text-align: left">{{=formatnumber(JsonProductInfo.ItemizedProductQuantity, "N0")}}</td>
+	<td style="width:15%; text-align: left">{{=FormatCurrency(JsonProductInfo.ItemizedProductCost,"en-US")}}</td>
+	<td style="width:40%; text-align: left">{{JsonProductInfo.ProductDescriptions}}</td>
+	<td style="width:20%; text-align: center">{{=FormatCurrency(JsonProductInfo.TotalProductQuantity,"en-US")}}</td>
+	<td style="width:10%; text-align: right;">{{=FormatCurrency(JsonProductInfo.TotalProductCost,"en-US")}}</td>
+ </tr>
+ {{/datasource}}
+</table>
+
+{{/datasource}}
