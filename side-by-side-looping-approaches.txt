@@ -6,18 +6,18 @@
    Set @passedJSON        = '{
           "BillingFirstName": "unknown",
           "BillingLastName": "unknown",
-          "BillingStreet": "1166 W Newport Center Dr",
-          "BillingCity": "Deerfield Beach",
-          "BillingState": "FL",
+          "BillingStreet": "019 NE Newport Center Dr",
+          "BillingCity": "Deerfield",
+          "BillingState": "KY",
           "BillingCountry": "US",
-          "BillingZipCode": "33442",
+          "BillingZipCode": "3N442",
           "ShippingFirst Name": "unknown",
           "ShippingLast Name": "unknown",
-          "ShippingStreet": "1166 W Newport Center Dr",
-          "ShippingCity": "Deerfield Beach",
-          "ShippingState": "FL",
+          "ShippingStreet": "019 NE Newport Center Dr",
+          "ShippingCity": "Deerfield",
+          "ShippingState": "KY",
           "ShippingCountry": "US",
-          "ShippingZipCode": "33442",
+          "ShippingZipCode": "3N442",
           "ProductInfo":
           [
               {
