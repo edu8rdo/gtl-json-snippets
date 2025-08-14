@@ -1,5 +1,5 @@
 %%[
-   Set @passedJSON        = '{"To":{"Address":"555@yopmail.com","SubscriberKey":"555@yopmail.com","ContactAttributes":{"SubscriberAttributes":{"AccountHomeLink":"https://dev.yourwinestore.com","EmailAddress":"new2@yopmail.com","FirstName":"Aditya","memCustomerGroup":"Aficionado","ClubMembershipPreferences":"White Only","ShippingAddress1":"Gurgaon","ShippingAddress2":"Gurgaon","ShippingCity":"Gurgaon","ShippingPostalCode":"131001","ShippingCountry":"India","UpcomingShipmentDate":"July 18, 2022"}}}}'
+   Set @passedJSON        = '{"To":{"Address":"555@yopmail.com","SubscriberKey":"555@yopmail.com","ContactAttributes":{"SubscriberAttributes":{"AccountHomeLink":"https://dev.websiteURL.com","EmailAddress":"new2@yopmail.com","FirstName":"Aditya","memCustomerGroup":"Aficionado","ClubMembershipPreferences":"White Only","ShippingAddress1":"Gurgaon","ShippingAddress2":"Gurgaon","ShippingCity":"Gurgaon","ShippingPostalCode":"131001","ShippingCountry":"India","UpcomingShipmentDate":"July 18, 2022"}}}}'
    /*
    Above JSON in clean format to help readability
    {
@@ -30,7 +30,7 @@
 
    Set @brs_SubAttr   = BuildRowsetFromJson(@passedJSON,'$.To..ContactAttributes..SubscriberAttributes', 1)
    Set @rc_SubAttr    = RowCount(@brs_SubAttr) /*<-- returns: 1*/
-   Set @field_SubAttr = Field(Row(@brs_SubAttr,1),1) /*<-- returns: https://dev.yourwinestore.com*/
+   Set @field_SubAttr = Field(Row(@brs_SubAttr,1),1) /*<-- returns: https://dev.websiteURL.com*/
 
    Set @brs_ClubMembership = BuildRowsetFromJson(@passedJSON,'$.To..ContactAttributes..SubscriberAttributes.ClubMembershipPreferences', 1)
    Set @brs_CustGroup      = BuildRowsetFromJson(@passedJSON,'$.To..ContactAttributes..SubscriberAttributes.memCustomerGroup', 1)
